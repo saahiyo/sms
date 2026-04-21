@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Society Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body data-auth-page="login">
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+        <div class="container">
+            <a class="navbar-brand fw-bold text-primary" href="../index.html">
+                <i class="fas fa-building me-2"></i>SMS
+            </a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="row justify-content-center align-items-center min-vh-100 py-5">
+            <div class="col-lg-6 col-md-8">
+                <div class="card shadow-lg">
+                    <div class="card-body p-5">
+                        <div class="text-center mb-4">
+                            <h2 class="text-primary mb-3"><i class="fas fa-envelope-open-text me-2"></i>Email Authentication</h2>
+                            <p class="text-muted mb-0">Connect this screen to Firebase Auth for sign in, sign up, and password reset.</p>
+                        </div>
+
+                        <div id="firebase-config-status" class="d-none"></div>
+                        <div id="auth-status" class="d-none"></div>
+
+                        <form id="login-form">
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold" for="auth-mode">Action</label>
+                                <select id="auth-mode" class="form-select form-select-lg">
+                                    <option value="login">Sign In</option>
+                                    <option value="signup">Create Account</option>
+                                    <option value="reset">Reset Password</option>
+                                    <option value="update-password">Update Password</option>
+                                </select>
+                            </div>
+
+                            <div id="email-field" class="mb-3">
+                                <label class="form-label fw-semibold" for="auth-email">Email</label>
+                                <input id="auth-email" type="email" class="form-control form-control-lg" placeholder="Enter your email" required>
+                            </div>
+
+                            <div id="password-field" class="mb-3">
+                                <label class="form-label fw-semibold" for="auth-password">Password</label>
+                                <input id="auth-password" type="password" class="form-control form-control-lg" placeholder="Enter your password" required>
+                            </div>
+
+                            <div id="role-group" class="mb-4 d-none">
+                                <label class="form-label fw-semibold d-block">Role for new account</label>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="role" id="admin-role" value="admin">
+                                    <label class="form-check-label fw-semibold" for="admin-role">
+                                        Admin
+                                    </label>
+                                </div>
+                                <div class="form-check mt-2">
+                                    <input class="form-check-input" type="radio" name="role" id="resident-role" value="resident" checked>
+                                    <label class="form-check-label fw-semibold" for="resident-role">
+                                        Resident
+                                    </label>
+                                </div>
+                            </div>
+
+                            <p id="auth-hint" class="small text-muted mb-4"></p>
+
+                            <button id="auth-submit-btn" type="submit" class="btn btn-primary btn-lg w-100 rounded-lg">
+                                <i class="fas fa-sign-in-alt me-2"></i>Sign In
+                            </button>
+                        </form>
+
+                        <div class="mt-4 pt-4 border-top">
+                            <h6 class="fw-semibold">Firebase setup</h6>
+                            <p class="text-muted small mb-2">Update <code>js/firebase-config.js</code> with your Firebase config and enable Email/Password sign-in in the Firebase Console.</p>
+                            <p class="text-muted small mb-0">New users store their selected role in <code>displayName</code>, which this app uses for dashboard routing.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="../js/firebase-config.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/main.js"></script>
+</body>
+</html>

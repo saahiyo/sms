@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payments - Society Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body data-auth-required="true">
+    <!-- Sidebar (same as other pages) -->
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <h3>SMS Dashboard</h3>
+        </div>
+        <ul class="sidebar-nav">
+            <li><a href="../index.html" class="nav-link">
+                <i class="fas fa-home nav-icon"></i>
+                <span class="nav-text">Home</span>
+            </a></li>
+            <li><a href="admin-dashboard.html" class="nav-link">
+                <i class="fas fa-tachometer-alt nav-icon"></i>
+                <span class="nav-text">Admin Dashboard</span>
+            </a></li>
+            <li><a href="resident-dashboard.html" class="nav-link">
+                <i class="fas fa-user nav-icon"></i>
+                <span class="nav-text">Resident Dashboard</span>
+            </a></li>
+            <li><a href="parking.html" class="nav-link">
+                <i class="fas fa-car nav-icon"></i>
+                <span class="nav-text">Parking</span>
+            </a></li>
+            <li><a href="payments.html" class="nav-link active">
+                <i class="fas fa-credit-card nav-icon"></i>
+                <span class="nav-text">Payments</span>
+            </a></li>
+            <li><a href="complaints.html" class="nav-link">
+                <i class="fas fa-exclamation-triangle nav-icon"></i>
+                <span class="nav-text">Complaints</span>
+            </a></li>
+            <li><a href="notices.html" class="nav-link">
+                <i class="fas fa-bullhorn nav-icon"></i>
+                <span class="nav-text">Notices</span>
+            </a></li>
+            <li><a href="#" onclick="logout()" class="nav-link logout-link">
+                <i class="fas fa-sign-out-alt nav-icon"></i>
+                <span class="nav-text">Logout</span>
+            </a></li>
+        </ul>
+    </nav>
+
+    <!-- Top Navbar -->
+    <nav class="top-navbar">
+        <div class="d-flex align-items-center h-100">
+            <button id="sidebar-toggle" class="btn btn-link text-dark">
+                <i class="fas fa-bars fs-4"></i>
+            </button>
+            <div class="ms-auto">
+                <span class="me-3">Payment Management</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container-fluid">
+            <div class="row mb-4">
+                <div class="col">
+                    <h1 class="h3"><i class="fas fa-credit-card me-2 text-primary"></i>Payment Management</h1>
+                    <p class="text-muted">Track maintenance payments and generate receipts.</p>
+                </div>
+            </div>
+
+            <!-- Payment Stats -->
+            <div class="row g-4 mb-5">
+                <div class="col-md-3">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <i class="fas fa-check-circle fa-3x text-success mb-3"></i>
+                            <div class="stat-number">89%</div>
+                            <p class="text-muted mb-0">Collection Rate</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <i class="fas fa-rupee-sign fa-3x text-primary mb-3"></i>
+                            <div class="stat-number">₹8,45,000</div>
+                            <p class="text-muted mb-0">This Month</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <i class="fas fa-clock fa-3x text-warning mb-3"></i>
+                            <div class="stat-number">23</div>
+                            <p class="text-muted mb-0">Pending</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <i class="fas fa-file-invoice fa-3x text-info mb-3"></i>
+                            <div class="stat-number">156</div>
+                            <p class="text-muted mb-0">Total Bills</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment History Table -->
+            <div class="card">
+                <div class="card-header d-flex justify-content-between">
+                    <h5 class="mb-0">Payment History</h5>
+                    <div>
+                        <select class="form-select form-select-sm" style="width: auto;">
+                            <option>All Residents</option>
+                            <option>Paid</option>
+                            <option>Pending</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Resident</th>
+                                    <th>Month</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>#001</td>
+                                    <td>Amit Sharma</td>
+                                    <td>January</td>
+                                    <td>₹5,000</td>
+                                    <td><span class="badge bg-success">Paid</span></td>
+                                    <td>2024-01-10</td>
+                                    <td><button class="btn btn-sm btn-outline-primary">Receipt</button></td>
+                                </tr>
+                                <tr>
+                                    <td>#002</td>
+                                    <td>Priya Patel</td>
+                                    <td>January</td>
+                                    <td>₹5,000</td>
+                                    <td><span class="badge bg-warning">Pending</span></td>
+                                    <td>-</td>
+                                    <td><button class="btn btn-sm btn-primary pay-btn">Send Reminder</button></td>
+                                </tr>
+                                <tr>
+                                    <td>#003</td>
+                                    <td>Raj Kumar</td>
+                                    <td>December</td>
+                                    <td>₹5,000</td>
+                                    <td><span class="badge bg-success">Paid</span></td>
+                                    <td>2023-12-20</td>
+                                    <td><button class="btn btn-sm btn-outline-primary">Receipt</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="row mt-4">
+                <div class="col-md-4">
+                    <a href="#" class="card text-center p-4 rounded-lg border-primary border-2 h-100">
+                        <i class="fas fa-plus-circle fa-3x text-primary mb-3"></i>
+                        <h5>Generate Bill</h5>
+                        <p class="text-muted">Create new maintenance bills</p>
+                    </a>
+                </div>
+                <div class="col-md-4">
+                    <a href="#" class="card text-center p-4 rounded-lg border-success border-2 h-100">
+                        <i class="fas fa-download fa-3x text-success mb-3"></i>
+                        <h5>Export Report</h5>
+                        <p class="text-muted">Download payment summary</p>
+                    </a>
+                </div>
+                <div class="col-md-4">
+                    <a href="#" class="card text-center p-4 rounded-lg border-info border-2 h-100">
+                        <i class="fas fa-sync fa-3x text-info mb-3"></i>
+                        <h5>Payment Gateway</h5>
+                        <p class="text-muted">Setup online payments</p>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="../js/firebase-config.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/main.js"></script>
+</body>
+</html>
