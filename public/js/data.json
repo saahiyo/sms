@@ -1,34 +1,163 @@
 {
   "stats": {
     "totalFlats": 125,
-    "totalResidents": 456,
-    "pendingPayments": 23,
-    "complaints": 12
+    "totalResidents": 84,
+    "pendingPayments": 3,
+    "complaints": 5
+  },
+  "payments": {
+    "paymentId1": {
+      "resident": "Amit Sharma",
+      "month": "Apr 2026",
+      "amount": 5000,
+      "status": "pending",
+      "date": "2026-04-20T09:30:00.000Z"
+    },
+    "paymentId2": {
+      "resident": "Priya Patel",
+      "month": "Apr 2026",
+      "amount": 5000,
+      "status": "paid",
+      "date": "2026-04-18T11:00:00.000Z"
+    },
+    "paymentId3": {
+      "resident": "Raj Kumar",
+      "month": "Apr 2026",
+      "amount": 5000,
+      "status": "pending",
+      "date": "2026-04-19T15:15:00.000Z"
+    },
+    "paymentId4": {
+      "resident": "Neha Verma",
+      "month": "Apr 2026",
+      "amount": 5000,
+      "status": "paid",
+      "date": "2026-04-17T10:45:00.000Z"
+    },
+    "paymentId5": {
+      "resident": "Sanjay Mehta",
+      "month": "Apr 2026",
+      "amount": 5000,
+      "status": "pending",
+      "date": "2026-04-21T08:20:00.000Z"
+    },
+    "paymentId6": {
+      "resident": "Farah Khan",
+      "month": "Apr 2026",
+      "amount": 5000,
+      "status": "paid",
+      "date": "2026-04-16T16:05:00.000Z"
+    }
   },
   "notices": {
     "noticeId1": {
-      "title": "Water Shutdown",
-      "content": "Maintenance from 10 AM to 1 PM",
+      "title": "Water Tank Cleaning",
+      "content": "Water supply will be unavailable from 10 AM to 1 PM on April 25 during tank cleaning.",
       "target": "All Residents",
-      "author": "admin@example.com",
-      "date": "2026-04-20T10:00:00.000Z"
+      "author": "admin@izharsms.com",
+      "date": "2026-04-22T08:00:00.000Z"
+    },
+    "noticeId2": {
+      "title": "Visitor Parking Update",
+      "content": "Visitor parking has been moved to the east-side bay until repainting work is complete.",
+      "target": "All Residents",
+      "author": "admin@izharsms.com",
+      "date": "2026-04-21T13:30:00.000Z"
+    },
+    "noticeId3": {
+      "title": "Maintenance Meeting",
+      "content": "Monthly society maintenance review will be held in the clubhouse at 7 PM this Saturday.",
+      "target": "Owners",
+      "author": "secretary@izharsms.com",
+      "date": "2026-04-19T17:00:00.000Z"
+    },
+    "noticeId4": {
+      "title": "Security Drill",
+      "content": "A fire and evacuation drill is scheduled for Sunday morning. Please cooperate with staff directions.",
+      "target": "All Residents",
+      "author": "security@izharsms.com",
+      "date": "2026-04-18T09:00:00.000Z"
     }
   },
   "complaints": {
     "complaintId1": {
-      "title": "Lift issue",
-      "description": "Lift stops on 3rd floor",
-      "resident": "user@example.com",
+      "title": "Lift stops at 3rd floor",
+      "description": "The main lift pauses for several seconds on the 3rd floor and the door sensor is slow to respond.",
+      "resident": "Amit Sharma",
       "flat": "3A",
       "priority": "High",
       "status": "Pending",
-      "date": "2026-04-20T10:00:00.000Z"
+      "date": "2026-04-22T07:45:00.000Z"
+    },
+    "complaintId2": {
+      "title": "Water leakage near parking ramp",
+      "description": "There is continuous seepage on the basement ramp and the floor becomes slippery after 8 PM.",
+      "resident": "Priya Patel",
+      "flat": "B-204",
+      "priority": "Urgent",
+      "status": "In Progress",
+      "date": "2026-04-21T19:20:00.000Z"
+    },
+    "complaintId3": {
+      "title": "Street light not working",
+      "description": "The light near Tower B entrance has been off for two nights.",
+      "resident": "Raj Kumar",
+      "flat": "B-110",
+      "priority": "Medium",
+      "status": "Resolved",
+      "date": "2026-04-20T18:10:00.000Z"
+    },
+    "complaintId4": {
+      "title": "Garbage pickup delay",
+      "description": "Wet waste was not collected this morning from the 5th floor service area.",
+      "resident": "Neha Verma",
+      "flat": "C-502",
+      "priority": "Low",
+      "status": "Pending",
+      "date": "2026-04-19T09:40:00.000Z"
+    },
+    "complaintId5": {
+      "title": "Intercom buzzing issue",
+      "description": "The intercom in the lobby creates static noise and disconnects after a few seconds.",
+      "resident": "Farah Khan",
+      "flat": "A-308",
+      "priority": "Medium",
+      "status": "In Progress",
+      "date": "2026-04-18T14:55:00.000Z"
     }
   },
   "parkingSlots": {
     "slot1": {
       "slot": "P-01",
       "status": "occupied"
+    },
+    "slot2": {
+      "slot": "P-02",
+      "status": "available"
+    },
+    "slot3": {
+      "slot": "P-03",
+      "status": "occupied"
+    },
+    "slot4": {
+      "slot": "P-04",
+      "status": "reserved"
+    },
+    "slot5": {
+      "slot": "P-05",
+      "status": "available"
+    },
+    "slot6": {
+      "slot": "P-06",
+      "status": "occupied"
+    },
+    "slot7": {
+      "slot": "P-07",
+      "status": "available"
+    },
+    "slot8": {
+      "slot": "P-08",
+      "status": "reserved"
     }
   }
 }

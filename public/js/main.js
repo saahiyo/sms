@@ -7,6 +7,7 @@ const defaultSMSData = {
     pendingPayments: 23,
     complaints: 12
   },
+  residents: [],
   payments: [
     { id: 1, resident: 'Amit Sharma', month: 'Jan 2024', amount: 5000, status: 'paid' },
     { id: 2, resident: 'Priya Patel', month: 'Jan 2024', amount: 5000, status: 'pending' },
@@ -172,8 +173,19 @@ async function hydrateAppData() {
       renderAppData();
     });
 
-    attachRealtimeCollection('payments', defaultSMSData.payments, (value) => {
+    attachRealtimeCollection('residents', defaultSMSData.residents, (value, rawValue) => {
+      window.SMSData.residents = normalizeCollection(value, defaultSMSData.residents);
+      if (rawValue) {
+        window.SMSData.stats.totalResidents = window.SMSData.residents.length;
+      }
+      renderAppData();
+    });
+
+    attachRealtimeCollection('payments', defaultSMSData.payments, (value, rawValue) => {
       window.SMSData.payments = normalizeCollection(value, defaultSMSData.payments);
+      if (rawValue) {
+        window.SMSData.stats.pendingPayments = countPendingPayments(window.SMSData.payments);
+      }
       renderAppData();
     });
 
@@ -203,12 +215,13 @@ function attachRealtimeCollection(path, fallbackValue, onValue) {
   const listener = ref.on(
     'value',
     (snapshot) => {
-      const value = snapshot.val();
-      onValue(value ?? fallbackValue);
+      const rawValue = snapshot.val();
+      const value = rawValue ?? getRealtimeEmptyValue(fallbackValue);
+      onValue(value, rawValue);
     },
     (error) => {
       console.warn(`[database] failed to subscribe to ${path}`, error);
-      onValue(fallbackValue);
+      onValue(getRealtimeEmptyValue(fallbackValue), null);
     }
   );
 
@@ -220,6 +233,11 @@ function detachDatabaseListeners() {
     ref.off('value', listener);
   });
   databaseListeners.length = 0;
+}
+
+function getRealtimeEmptyValue(fallbackValue) {
+  if (Array.isArray(fallbackValue)) return [];
+  return fallbackValue;
 }
 
 function renderAppData() {
@@ -304,6 +322,12 @@ function summarizeComplaints(complaints) {
   );
 }
 
+function countPendingPayments(payments) {
+  return payments.reduce((count, payment) => {
+    return count + (((payment.status || '').toLowerCase() === 'pending') ? 1 : 0);
+  }, 0);
+}
+
 function renderParkingGrid() {
   const container = document.querySelector('.parking-grid');
   if (!container) return;
@@ -377,22 +401,45 @@ function renderComplaints() {
     const subject = complaint.title || complaint.subject || 'Complaint';
     const resident = complaint.resident || 'Resident';
     const flat = complaint.flat || '-';
+    
     row.innerHTML = `
       <td>
-        <div class="complaint-id">${escapeHtml(getComplaintReference(complaintId, index))}</div>
-        <div class="complaint-title-row">
-          <h6 class="complaint-title">${escapeHtml(subject)}</h6>
-          <span class="badge ${getPriorityBadgeClass(complaint.priority)}">${escapeHtml(complaint.priority || 'Medium')}</span>
+        <div class="d-flex flex-column">
+          <span class="text-xs fw-bold text-uppercase text-secondary mb-1" style="font-size: 0.7rem; letter-spacing: 0.5px;">
+            ${escapeHtml(getComplaintReference(complaintId, index))}
+          </span>
+          <h6 class="mb-1 fw-bold text-dark">${escapeHtml(subject)}</h6>
+          <div class="d-flex align-items-center gap-2">
+            <span class="badge ${getPriorityBadgeClass(complaint.priority)} rounded-pill" style="font-size: 0.65rem;">
+              ${escapeHtml(complaint.priority || 'Medium')}
+            </span>
+            <span class="text-muted small text-truncate" style="max-width: 250px;">
+              ${escapeHtml(getComplaintSnippet(complaint.description))}
+            </span>
+          </div>
         </div>
-        <p class="complaint-snippet">${escapeHtml(getComplaintSnippet(complaint.description))}</p>
       </td>
       <td>
-        <div class="complaint-resident">${escapeHtml(resident)}</div>
-        <div class="complaint-flat">Flat ${escapeHtml(flat)}</div>
+        <div class="d-flex flex-column">
+          <span class="fw-medium text-dark">${escapeHtml(resident)}</span>
+          <span class="text-muted small">Flat ${escapeHtml(flat)}</span>
+        </div>
       </td>
-      <td><span class="badge ${getComplaintBadgeClass(complaint.status)}">${escapeHtml(complaint.status || 'Pending')}</span></td>
-      <td><span class="complaint-date">${formatShortDate(complaint.date)}</span></td>
-      <td><button class="btn btn-sm btn-outline-secondary view-complaint-btn" type="button" data-id="${complaintId}"><i class="fas fa-eye me-1"></i>View Case</button></td>
+      <td>
+        <span class="badge ${getComplaintBadgeClass(complaint.status)} rounded-pill px-3">
+          ${escapeHtml(complaint.status || 'Pending')}
+        </span>
+      </td>
+      <td>
+        <div class="text-muted small">
+          ${formatShortDate(complaint.date)}
+        </div>
+      </td>
+      <td>
+        <button class="btn btn-sm btn-light border rounded-pill px-3 view-complaint-btn" type="button" data-id="${complaintId}">
+          <i class="fas fa-eye me-1 text-primary"></i>View Case
+        </button>
+      </td>
     `;
     complaintsTableBody.appendChild(row);
   });
@@ -436,10 +483,15 @@ function showComplaintDetails(id) {
   if (resolveBtn) {
     resolveBtn.classList.toggle('d-none', !isAdmin || (complaint.status || '').toLowerCase() === 'resolved');
     resolveBtn.onclick = async () => {
-      if (confirm('Are you sure you want to resolve this complaint?')) {
+      if (!confirm('Are you sure you want to resolve this complaint?')) return;
+
+      try {
         await updateComplaintStatus(id, 'Resolved');
         const modal = bootstrap.Modal.getInstance(modalEl);
         if (modal) modal.hide();
+        showToast('Complaint marked as resolved.', 'success');
+      } catch (error) {
+        showToast(error.message || 'Failed to update complaint status.', 'danger');
       }
     };
   }
@@ -449,12 +501,13 @@ function showComplaintDetails(id) {
 }
 
 async function updateComplaintStatus(id, status) {
-  if (!database) return;
+  ensureDatabaseAvailable('update complaint status');
   try {
     await database.ref(`complaints/${id}`).update({ status });
     // Local update will happen via realtime listener
   } catch (error) {
     console.error('Failed to update complaint status', error);
+    throw new Error('Unable to update complaint status in Firebase.');
   }
 }
 
@@ -477,7 +530,11 @@ function getComplaintBadgeClass(status) {
 }
 
 function getComplaintReference(id, index) {
-  if (typeof id === 'string' && id.trim()) return `Case ${id}`;
+  if (typeof id === 'string' && id.trim()) {
+    // If it's a long Firebase ID, show a shorter version
+    const displayId = id.length > 10 ? id.substring(0, 8).toUpperCase() : id;
+    return `Case #${displayId}`;
+  }
   const safeIndex = Number.isFinite(index) ? index + 1 : 1;
   return `Case #${String(safeIndex).padStart(3, '0')}`;
 }
@@ -496,7 +553,7 @@ function initForms() {
   const payButtons = document.querySelectorAll('.pay-btn');
   payButtons.forEach((btn) => {
     btn.addEventListener('click', () => {
-      alert('Redirecting to payment gateway... (Demo)');
+      showToast('Redirecting to payment gateway... (Demo)', 'info');
     });
   });
 }
@@ -531,19 +588,12 @@ function initAdminForms() {
       if (!response.ok) throw new Error(data.error || 'Failed to create resident account');
 
       // 2. Add resident details to Realtime Database
-      if (database) {
-        await database.ref(`residents/${data.localId}`).set({
-          name: formData.get('name'),
-          email: formData.get('email'),
-          flat: formData.get('flat'),
-          role: 'resident',
-          createdAt: new Date().toISOString()
-        });
-
-        // 3. Update total residents stat
-        const statsRef = database.ref('stats/totalResidents');
-        await statsRef.transaction((current) => (current || 0) + 1);
-      }
+      await createResidentProfile(data.localId, {
+        name: formData.get('name'),
+        email: formData.get('email'),
+        flat: formData.get('flat'),
+        role: 'resident'
+      });
 
       setAuthStatus(statusEl, 'success', 'Resident account created successfully!');
       addResidentForm.reset();
@@ -570,24 +620,25 @@ function initComplaintForms() {
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
 
-      const formData = new FormData(form);
-      const complaint = {
-        title: formData.get('subject')?.toString().trim() || 'Complaint',
-        description: formData.get('description')?.toString().trim() || '',
-        resident: formData.get('resident')?.toString().trim() || auth?.currentUser?.email || 'Resident',
-        flat: formData.get('flat')?.toString().trim() || '-',
-        priority: formData.get('priority')?.toString().trim() || 'Medium',
-        status: 'Pending',
-        date: new Date().toISOString()
-      };
+      try {
+        const formData = new FormData(form);
+        const complaint = {
+          title: formData.get('subject')?.toString().trim() || 'Complaint',
+          description: formData.get('description')?.toString().trim() || '',
+          resident: formData.get('resident')?.toString().trim() || auth?.currentUser?.email || 'Resident',
+          flat: formData.get('flat')?.toString().trim() || '-',
+          priority: formData.get('priority')?.toString().trim() || 'Medium',
+          status: 'Pending',
+          date: new Date().toISOString()
+        };
 
-      await addCollectionItem('complaints', complaint);
-      window.SMSData.complaints.unshift(complaint);
-      window.SMSData.stats.complaints = window.SMSData.complaints.length;
-      renderAppData();
+        await addCollectionItem('complaints', complaint);
 
-      alert('Complaint submitted successfully!');
-      form.reset();
+        showToast('Complaint submitted successfully!', 'success');
+        form.reset();
+      } catch (error) {
+        showToast(error.message || 'Failed to submit complaint.', 'danger');
+      }
     });
   });
 }
@@ -599,31 +650,91 @@ function initNoticeForm() {
   noticeForm.addEventListener('submit', async (event) => {
     event.preventDefault();
 
-    const formData = new FormData(noticeForm);
-    const notice = {
-      title: formData.get('title')?.toString().trim() || 'Notice',
-      content: formData.get('content')?.toString().trim() || '',
-      target: formData.get('target')?.toString().trim() || 'All Residents',
-      author: auth?.currentUser?.email || 'Admin',
-      date: new Date().toISOString()
-    };
+    try {
+      const formData = new FormData(noticeForm);
+      const notice = {
+        title: formData.get('title')?.toString().trim() || 'Notice',
+        content: formData.get('content')?.toString().trim() || '',
+        target: formData.get('target')?.toString().trim() || 'All Residents',
+        author: auth?.currentUser?.email || 'Admin',
+        date: new Date().toISOString()
+      };
 
-    await addCollectionItem('notices', notice);
-    window.SMSData.notices.unshift(notice);
-    renderAppData();
+      await addCollectionItem('notices', notice);
 
-    alert('Notice published successfully!');
-    noticeForm.reset();
+      showToast('Notice published successfully!', 'success');
+      noticeForm.reset();
+    } catch (error) {
+      showToast(error.message || 'Failed to publish notice.', 'danger');
+    }
   });
 }
 
 async function addCollectionItem(collectionName, item) {
-  if (!database) {
-    console.warn(`[database] ${collectionName} write skipped because databaseURL is missing`);
-    return;
-  }
+  ensureDatabaseAvailable(`write ${collectionName}`);
 
-  await database.ref(collectionName).push(item);
+  try {
+    return await database.ref(collectionName).push(item);
+  } catch (error) {
+    console.error(`[database] failed to write ${collectionName}`, error);
+    throw new Error(`Unable to save ${collectionName} to Firebase.`);
+  }
+}
+
+function ensureDatabaseAvailable(action) {
+  if (database) return;
+  throw new Error(`Cannot ${action} because Firebase Realtime Database is not configured.`);
+}
+
+async function createResidentProfile(uid, resident) {
+  ensureDatabaseAvailable('save resident profile');
+
+  const profile = {
+    ...resident,
+    createdAt: new Date().toISOString()
+  };
+
+  await database.ref(`residents/${uid}`).set(profile);
+  await database.ref('stats/totalResidents').transaction((current) => (current || 0) + 1);
+}
+
+function showToast(message, variant = 'info') {
+  const container = getToastContainer();
+  const toastEl = document.createElement('div');
+  const variantClass = variant === 'danger'
+    ? 'text-bg-danger'
+    : variant === 'success'
+      ? 'text-bg-success'
+      : 'text-bg-dark';
+
+  toastEl.className = `toast align-items-center border-0 ${variantClass}`;
+  toastEl.setAttribute('role', 'status');
+  toastEl.setAttribute('aria-live', 'polite');
+  toastEl.setAttribute('aria-atomic', 'true');
+  toastEl.innerHTML = `
+    <div class="d-flex">
+      <div class="toast-body">${escapeHtml(message)}</div>
+      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+  `;
+
+  container.appendChild(toastEl);
+  const toast = new bootstrap.Toast(toastEl, { delay: 3200 });
+  toastEl.addEventListener('hidden.bs.toast', () => {
+    toastEl.remove();
+  });
+  toast.show();
+}
+
+function getToastContainer() {
+  let container = document.getElementById('app-toast-container');
+  if (container) return container;
+
+  container = document.createElement('div');
+  container.id = 'app-toast-container';
+  container.className = 'toast-container position-fixed top-0 end-0 p-3';
+  document.body.appendChild(container);
+  return container;
 }
 
 async function initAuth() {
@@ -740,11 +851,18 @@ function initAuthForm(user) {
       if (mode === 'signup') {
         const userCredential = await auth.createUserWithEmailAndPassword(email, password);
         await userCredential.user.updateProfile({ displayName: selectedRole });
-        setAuthStatus(
-          authStatus,
-          'success',
-          'Account created. You can now sign in with your new account.'
-        );
+        try {
+          await createResidentProfile(userCredential.user.uid, {
+            name: email.split('@')[0],
+            email,
+            flat: '-',
+            role: selectedRole
+          });
+        } catch (profileError) {
+          console.error('[auth] resident profile sync failed', profileError);
+          throw new Error(`Account created, but resident profile sync failed: ${profileError.message}`);
+        }
+        setAuthStatus(authStatus, 'success', 'Account created and saved successfully.');
         authForm.reset();
         updateAuthMode();
         return;

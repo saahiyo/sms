@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="/css/style.css">
 </head>
-<body data-auth-required="true">
+<body data-auth-required="true" data-auth-role="admin">
     <!-- Sidebar -->
     <nav class="sidebar">
         <div class="sidebar-header">
@@ -93,11 +93,11 @@
                             <form id="notice-form">
                                 <div class="mb-3">
                                     <label class="form-label">Title</label>
-                                    <input type="text" name="title" class="form-control" placeholder="Notice title">
+                                    <input type="text" name="title" class="form-control" placeholder="Notice title" required>
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Content</label>
-                                    <textarea name="content" class="form-control" rows="4" placeholder="Write your notice..."></textarea>
+                                    <textarea name="content" class="form-control" rows="4" placeholder="Write your notice..." required></textarea>
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Target</label>
