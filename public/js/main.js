@@ -739,10 +739,19 @@ function updateAuthProfile(user) {
     emailElement.textContent = user?.email || 'Guest';
   }
 
+  const role = user ? getUserRole(user) : 'visitor';
   if (roleElement) {
-    const role = user ? getUserRole(user) : 'visitor';
     roleElement.textContent = capitalize(role);
   }
+
+  // Toggle visibility of admin-only menu items
+  const adminLinks = document.querySelectorAll('.nav-link[href*="admin-dashboard"]');
+  adminLinks.forEach(link => {
+    const parentLi = link.closest('li');
+    if (parentLi) {
+      parentLi.style.display = role === 'admin' ? 'block' : 'none';
+    }
+  });
 }
 
 function updateHomeAuthState(user) {

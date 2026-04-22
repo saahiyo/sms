@@ -26,7 +26,18 @@ async function callFirebase(action, payload) {
     body: JSON.stringify(payload)
   });
 
-  const data = await response.json();
+  const contentType = response.headers.get('content-type');
+  let data;
+  
+  if (contentType && contentType.includes('application/json')) {
+    data = await response.json();
+  } else {
+    const text = await response.text();
+    const error = new Error(`Firebase Auth request failed with status ${response.status}: ${text.substring(0, 100)}...`);
+    error.status = response.status;
+    throw error;
+  }
+
   if (!response.ok) {
     const error = new Error(data.error?.message || 'Firebase Auth request failed');
     error.status = response.status;
