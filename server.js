@@ -8,6 +8,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 const rootDir = __dirname;
 const pageDir = path.join(rootDir, 'pages');
+const publicDir = path.join(rootDir, 'public');
 
 const pageRoutes = {
   'index.html': path.join(rootDir, 'index.html'),
@@ -32,6 +33,7 @@ function sendPage(res, pageName) {
 
 app.use(cors());
 app.use(express.json());
+app.use(express.static(publicDir));
 app.use(express.static(rootDir));
 
 app.use('/api/auth', require('./backend/auth'));
