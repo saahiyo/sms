@@ -499,3 +499,27 @@ body {
 .text-primary { color: var(--primary-color) !important; }
 .bg-primary-light { background-color: var(--primary-light) !important; }
 .rounded-lg { border-radius: 0.75rem; }
+/* Landing Page Specific Utilities */
+.hover-lift {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.hover-lift:hover {
+  transform: translateY(-8px) !important;
+  box-shadow: 0 15px 30px rgba(0,0,0,0.08) !important;
+}
+.filter-blur {
+  filter: blur(50px) !important;
+}
+.hover-opacity-100 {
+  transition: opacity 0.2s ease;
+}
+.hover-opacity-100:hover {
+  opacity: 1 !important;
+}
+.tracking-wider {
+  letter-spacing: 0.1em;
+}
+.landing-navbar {
+  background: rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(10px);
+}

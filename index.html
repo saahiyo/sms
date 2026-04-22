@@ -55,16 +55,18 @@
         </ul>
     </nav>
 
-    <!-- Top Navbar -->
-    <nav class="top-navbar">
-        <div class="d-flex align-items-center h-100">
-            <button id="sidebar-toggle" class="btn btn-link text-dark">
-                <i class="fas fa-bars fs-4"></i>
-            </button>
-            <div class="ms-auto d-flex align-items-center gap-2">
-                <span class="me-2" data-home-greeting>Welcome to Society Management System</span>
-                <a href="pages/login.html" class="btn btn-outline-primary btn-sm" data-home-auth-link>Login</a>
-                <button type="button" class="btn btn-outline-secondary btn-sm d-none" data-home-logout-btn onclick="logout()">Logout</button>
+    <!-- Top Navbar (Landing Page Version) -->
+    <nav class="top-navbar landing-navbar shadow-sm" style="position: fixed; width: 100%; top: 0; z-index: 1000; left: 0;">
+        <div class="container h-100 d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center">
+                <i class="fas fa-building text-primary fs-3 me-2"></i>
+                <span class="fs-4 fw-bold text-dark">Izhar SMS</span>
+            </div>
+            <div class="d-flex align-items-center gap-3">
+                <a href="#features" class="text-dark text-decoration-none d-none d-md-block fw-medium">Features</a>
+                <span class="text-muted small d-none d-lg-block" data-home-greeting></span>
+                <a href="pages/login.html" class="btn btn-primary rounded-pill px-4 shadow-sm fw-medium" data-home-auth-link>Login / Register</a>
+                <button type="button" class="btn btn-outline-secondary rounded-pill px-4 d-none" data-home-logout-btn onclick="logout()">Logout</button>
             </div>
         </div>
     </nav>
@@ -72,58 +74,115 @@
     <!-- Main Content -->
     <main class="main-content">
         <!-- Hero Section -->
-        <section class="hero">
+        <section class="hero hero-split d-flex align-items-center" style="background: linear-gradient(135deg, #f8f9fa 0%, #e3f2fd 100%); min-height: 80vh; padding-top: 80px; margin-top: 0; text-align: left; color: inherit;">
             <div class="container">
-                <h1>Smart Society Management System</h1>
-                <p>Streamline apartment and community management with our modern, intuitive platform. 
-                   Handle residents, payments, parking, complaints, and notices effortlessly.</p>
-                <a href="pages/login.html" class="btn btn-light btn-lg rounded-lg" data-home-hero-link>
-                    <i class="fas fa-rocket me-2"></i><span data-home-hero-label>Get Started</span>
-                </a>
+                <div class="row align-items-center">
+                    <div class="col-lg-6 text-center text-lg-start mb-5 mb-lg-0 z-1">
+                        <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 rounded-pill px-3 mb-3 fs-6">The Future of Living</span>
+                        <h1 class="display-4 fw-bold text-dark mb-4" style="line-height: 1.2;">Smart Society <br>Management System</h1>
+                        <p class="lead text-muted mb-4 fs-5" style="max-width: 500px; margin: 0 auto; margin-lg-0: auto 0;">Streamline apartment and community management with our modern, intuitive platform. Handle residents, payments, parking, and notices effortlessly.</p>
+                        <div class="d-flex justify-content-center justify-content-lg-start gap-3 mt-4">
+                            <a href="pages/login.html" class="btn btn-primary btn-lg rounded-pill px-4 shadow-sm hero-btn" data-home-hero-link>
+                                <span data-home-hero-label>Get Started Free</span> <i class="fas fa-arrow-right ms-2"></i>
+                            </a>
+                            <a href="#features" class="btn btn-outline-dark btn-lg rounded-pill px-4 hero-btn">
+                                Learn More
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 position-relative">
+                        <!-- Abstract Mockup Graphic -->
+                        <div class="hero-image-wrapper position-relative text-center">
+                            <img src="/images/dashboard-mockup.png" alt="Dashboard Preview" class="img-fluid rounded-4 shadow-lg hero-img" style="transform: perspective(1000px) rotateY(-5deg) rotateX(2deg); border: 1px solid rgba(255,255,255,0.5); max-height: 500px; object-fit: cover;">
+                            <!-- Floating blobs -->
+                            <div class="position-absolute bg-primary rounded-circle filter-blur opacity-25" style="width: 300px; height: 300px; top: -50px; right: -50px; z-index: -1; filter: blur(40px);"></div>
+                            <div class="position-absolute bg-info rounded-circle filter-blur opacity-25" style="width: 250px; height: 250px; bottom: -50px; left: -50px; z-index: -1; filter: blur(40px);"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
 
         <!-- Features Preview -->
-        <section class="container my-5">
+        <section id="features" class="container my-5 py-5">
+            <div class="text-center mb-5">
+                <span class="text-primary fw-bold text-uppercase tracking-wider">Capabilities</span>
+                <h2 class="display-6 fw-bold mt-2">Everything you need to manage your society</h2>
+                <p class="text-muted fs-5 mt-3 mx-auto" style="max-width: 600px;">A complete toolkit designed to eliminate paperwork and bring transparency to community living.</p>
+            </div>
             <div class="row g-4">
                 <div class="col-lg-3 col-md-6">
-                    <div class="card h-100 text-center">
-                        <div class="card-body">
-                            <i class="fas fa-users fa-3x text-primary mb-3"></i>
-                            <h5>Resident Management</h5>
-                            <p>Complete resident database with profiles and details.</p>
+                    <div class="card stat-card h-100 border-0 shadow-sm overflow-hidden text-center feature-card hover-lift" style="background: linear-gradient(135deg, #e3f2fd 0%, #ffffff 100%); transition: transform 0.3s ease;">
+                        <div class="card-body p-4">
+                            <div class="d-inline-flex align-items-center justify-content-center rounded-circle bg-white shadow-sm p-4 mb-4" style="width: 80px; height: 80px;">
+                                <i class="fas fa-users fa-2x" style="color: #1976d2;"></i>
+                            </div>
+                            <h5 class="fw-bold">Resident Mgmt</h5>
+                            <p class="text-muted mb-0">Complete resident database with profiles, vehicles, and contact details.</p>
                         </div>
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6">
-                    <div class="card h-100 text-center">
-                        <div class="card-body">
-                            <i class="fas fa-credit-card fa-3x text-primary mb-3"></i>
-                            <h5>Payment Tracking</h5>
-                            <p>Online payments and maintenance billing system.</p>
+                    <div class="card stat-card h-100 border-0 shadow-sm overflow-hidden text-center feature-card hover-lift" style="background: linear-gradient(135deg, #e8f5e9 0%, #ffffff 100%); transition: transform 0.3s ease;">
+                        <div class="card-body p-4">
+                            <div class="d-inline-flex align-items-center justify-content-center rounded-circle bg-white shadow-sm p-4 mb-4" style="width: 80px; height: 80px;">
+                                <i class="fas fa-credit-card fa-2x" style="color: #2e7d32;"></i>
+                            </div>
+                            <h5 class="fw-bold">Payment Tracking</h5>
+                            <p class="text-muted mb-0">Online payments, maintenance billing, and automated digital receipts.</p>
                         </div>
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6">
-                    <div class="card h-100 text-center">
-                        <div class="card-body">
-                            <i class="fas fa-car fa-3x text-primary mb-3"></i>
-                            <h5>Parking Management</h5>
-                            <p>Visual parking slot allocation and tracking.</p>
+                    <div class="card stat-card h-100 border-0 shadow-sm overflow-hidden text-center feature-card hover-lift" style="background: linear-gradient(135deg, #fff3e0 0%, #ffffff 100%); transition: transform 0.3s ease;">
+                        <div class="card-body p-4">
+                            <div class="d-inline-flex align-items-center justify-content-center rounded-circle bg-white shadow-sm p-4 mb-4" style="width: 80px; height: 80px;">
+                                <i class="fas fa-car fa-2x" style="color: #f57c00;"></i>
+                            </div>
+                            <h5 class="fw-bold">Parking Control</h5>
+                            <p class="text-muted mb-0">Visual parking slot allocation and visitor vehicle tracking system.</p>
                         </div>
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6">
-                    <div class="card h-100 text-center">
-                        <div class="card-body">
-                            <i class="fas fa-bullhorn fa-3x text-primary mb-3"></i>
-                            <h5>Notices & Communication</h5>
-                            <p>Centralized notice board for society announcements.</p>
+                    <div class="card stat-card h-100 border-0 shadow-sm overflow-hidden text-center feature-card hover-lift" style="background: linear-gradient(135deg, #f3e5f5 0%, #ffffff 100%); transition: transform 0.3s ease;">
+                        <div class="card-body p-4">
+                            <div class="d-inline-flex align-items-center justify-content-center rounded-circle bg-white shadow-sm p-4 mb-4" style="width: 80px; height: 80px;">
+                                <i class="fas fa-bullhorn fa-2x" style="color: #7b1fa2;"></i>
+                            </div>
+                            <h5 class="fw-bold">Digital Notices</h5>
+                            <p class="text-muted mb-0">Centralized digital notice board for instant society announcements.</p>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
+
+        <!-- Modern Footer -->
+        <footer class="bg-dark text-white py-5 mt-5">
+            <div class="container">
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="fas fa-building text-primary fs-3 me-2"></i>
+                            <span class="fs-4 fw-bold">Izhar SMS</span>
+                        </div>
+                        <p class="text-muted opacity-75">Empowering modern communities with intelligent tools for seamless living.</p>
+                    </div>
+                    <div class="col-md-8 d-flex justify-content-md-end align-items-center">
+                        <div class="d-flex flex-wrap gap-4">
+                            <a href="#" class="text-white text-decoration-none opacity-75 hover-opacity-100">Privacy Policy</a>
+                            <a href="#" class="text-white text-decoration-none opacity-75 hover-opacity-100">Terms of Service</a>
+                            <a href="#" class="text-white text-decoration-none opacity-75 hover-opacity-100">Contact Support</a>
+                        </div>
+                    </div>
+                </div>
+                <hr class="border-secondary my-4">
+                <div class="text-center text-muted small">
+                    &copy; 2026 Izhar Society Management System. All rights reserved.
+                </div>
+            </div>
+        </footer>
     </main>
 
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>

@@ -84,6 +84,7 @@ const auth = hasFirebaseConfig
   : null;
 
 const hasDatabaseConfig = Boolean(
+
   hasFirebaseConfig &&
   typeof firebase.database === 'function' &&
   inferredDatabaseUrl
@@ -100,6 +101,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   initSidebar();
   setActiveNavLink();
   initForms();
+  
+  // Apply immediate UI state from sessionStorage to prevent flicker
+  applyInitialAuthState();
 
   await hydrateAppData();
 
@@ -616,6 +620,14 @@ async function initAuth() {
   auth.onAuthStateChanged(async (user) => {
     console.log('[auth] stateChanged', user ? { email: user.email, displayName: user.displayName } : null);
 
+    if (user) {
+      sessionStorage.setItem('user_role', getUserRole(user));
+      sessionStorage.setItem('user_email', user.email);
+    } else {
+      sessionStorage.removeItem('user_role');
+      sessionStorage.removeItem('user_email');
+    }
+
     updateAuthProfile(user);
     updateHomeAuthState(user);
     await applyAuthGuard(user);
@@ -625,6 +637,18 @@ async function initAuth() {
       authFormInitialized = true;
     }
   });
+}
+
+function applyInitialAuthState() {
+  const storedRole = sessionStorage.getItem('user_role');
+  const storedEmail = sessionStorage.getItem('user_email');
+  
+  if (storedRole) {
+    // Mock a user object for immediate UI update
+    const mockUser = { email: storedEmail, displayName: storedRole };
+    updateAuthProfile(mockUser);
+    updateHomeAuthState(mockUser);
+  }
 }
 
 function initAuthForm(user) {
@@ -919,6 +943,9 @@ async function logout() {
   if (auth) {
     await auth.signOut();
   }
+  
+  sessionStorage.removeItem('user_role');
+  sessionStorage.removeItem('user_email');
 
   redirectToLogin();
 }
