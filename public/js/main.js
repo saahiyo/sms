@@ -120,22 +120,34 @@ function initSidebar() {
   const sidebar = document.querySelector('.sidebar');
   const toggleBtn = document.getElementById('sidebar-toggle');
 
+  if (!sidebar) return;
+
+  const syncSidebarForViewport = () => {
+    if (window.innerWidth <= 768) {
+      sidebar.classList.add('collapsed');
+    } else {
+      sidebar.classList.remove('collapsed');
+    }
+  };
+
+  syncSidebarForViewport();
+
   if (toggleBtn && sidebar) {
     toggleBtn.addEventListener('click', () => {
       sidebar.classList.toggle('collapsed');
     });
   }
 
-  if (sidebar) {
-    document.addEventListener('click', (event) => {
-      const isClickInsideSidebar = sidebar.contains(event.target);
-      const isToggleClick = event.target.id === 'sidebar-toggle' || event.target.closest('#sidebar-toggle');
+  window.addEventListener('resize', syncSidebarForViewport);
 
-      if (!isClickInsideSidebar && !isToggleClick && window.innerWidth <= 768) {
-        sidebar.classList.add('collapsed');
-      }
-    });
-  }
+  document.addEventListener('click', (event) => {
+    const isClickInsideSidebar = sidebar.contains(event.target);
+    const isToggleClick = event.target.id === 'sidebar-toggle' || event.target.closest('#sidebar-toggle');
+
+    if (!isClickInsideSidebar && !isToggleClick && window.innerWidth <= 768) {
+      sidebar.classList.add('collapsed');
+    }
+  });
 }
 
 function setActiveNavLink() {
