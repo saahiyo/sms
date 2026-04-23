@@ -717,12 +717,13 @@ body {
 
   .landing-hero-title { font-size: 2rem; margin-bottom: 1rem; }
   .landing-hero-text { font-size: 0.95rem !important; margin-bottom: 1.25rem; }
-  .landing-hero-copy { text-align: center; }
+  .landing-hero-copy { text-align: left; }
 
   .landing-hero-actions {
     flex-direction: column;
     gap: 0.75rem !important;
     width: 100%;
+    align-items: flex-start;
   }
 
   .hero-btn-primary,
@@ -737,7 +738,7 @@ body {
   .hero-mockup-glow { display: none; }
 
   .feature-icons-row {
-    justify-content: center;
+    justify-content: flex-start;
     gap: 1.5rem;
     margin-top: 2rem;
   }
