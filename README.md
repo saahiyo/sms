@@ -56,7 +56,8 @@ izhar-sms/
 │   │   └── style.css          # Global stylesheet
 │   ├── js/
 │   │   ├── main.js            # Core application logic
-│   │   └── firebase-config.js # Firebase configuration
+│   │   ├── firebase-config.js # Firebase configuration
+│   │   └── data.json          # Seed data for Firebase RTDB
 │   └── images/                # Image assets
 │
 ├── backend/                   # Server-side modules
@@ -103,9 +104,114 @@ FIREBASE_API_KEY=YOUR_FIREBASE_API_KEY
 PORT=3000
 ```
 
-### 4. Configure Firebase
+### 4. Firebase Setup (Full Guide)
 
-Update the Firebase configuration in `public/js/firebase-config.js` with your own project credentials:
+This project uses **Firebase Authentication** (Email/Password) and **Firebase Realtime Database** for all data. Follow every step below to get a working backend.
+
+#### Step 4.1 — Create a Firebase Project
+
+1. Go to [Firebase Console](https://console.firebase.google.com/).
+2. Click **Add project** → give it a name (e.g. `izhar-sms`) → click **Continue**.
+3. Disable Google Analytics (optional) → click **Create project**.
+4. Once created, click **Continue** to enter the project dashboard.
+
+#### Step 4.2 — Register a Web App
+
+1. On the project overview page, click the **Web** icon (`</>`) to add a web app.
+2. Enter a nickname (e.g. `izhar-sms-web`) → click **Register app**.
+3. Firebase will show you a config object. **Copy these values** — you'll need them in Step 4.5.
+
+#### Step 4.3 — Enable Authentication
+
+1. In the left sidebar, go to **Build → Authentication**.
+2. Click **Get started**.
+3. Go to the **Sign-in method** tab.
+4. Enable **Email/Password** → click **Save**.
+5. Go to the **Users** tab → click **Add user** to create your first admin account:
+   - **Email:** your admin email (e.g. `admin@izharsms.com`)
+   - **Password:** choose a strong password
+   - Click **Add user**
+
+> **Note:** Users who register through the app's login page will be assigned the `resident` role by default. To make a user an admin, you'll need to set their role in the Realtime Database (see Step 4.4).
+
+#### Step 4.4 — Set Up Realtime Database & Import Seed Data
+
+1. In the left sidebar, go to **Build → Realtime Database**.
+2. Click **Create Database**.
+3. Choose a database location (e.g. `asia-southeast1`) → click **Next**.
+4. Select **Start in test mode** (you can tighten rules later) → click **Enable**.
+
+##### Import the Seed Data (`data.json`)
+
+The project includes a ready-made seed file at `public/js/data.json` that pre-populates the database with sample stats, payments, notices, complaints, and parking slots.
+
+1. In the Firebase Console, open your **Realtime Database**.
+2. Click the **⋮ (three-dot menu)** at the top right of the data viewer.
+3. Click **Import JSON**.
+4. Browse and select the file: **`public/js/data.json`** from this project.
+5. Click **Import**.
+
+After import, your database tree should look like this:
+
+```
+root
+├── stats
+│   ├── totalFlats: 125
+│   ├── totalResidents: 84
+│   ├── pendingPayments: 3
+│   └── complaints: 5
+├── payments
+│   ├── paymentId1: { resident, month, amount, status, date }
+│   ├── paymentId2: { ... }
+│   └── ...
+├── notices
+│   ├── noticeId1: { title, content, target, author, date }
+│   └── ...
+├── complaints
+│   ├── complaintId1: { title, description, resident, flat, priority, status, date }
+│   └── ...
+└── parkingSlots
+    ├── slot1: { slot: "P-01", status: "occupied" }
+    └── ...
+```
+
+##### Set User Roles
+
+After importing `data.json`, you need to add user roles. In the Realtime Database, manually add a `users` node:
+
+1. Click the **+** button at the root of your database.
+2. Add the following structure:
+
+```
+users
+└── <USER_UID>
+    ├── email: "admin@izharsms.com"
+    └── role: "admin"
+```
+
+> Replace `<USER_UID>` with the UID shown in **Authentication → Users** tab for your admin account.
+
+##### Recommended Security Rules
+
+Once everything is working, update your **Database Rules** to:
+
+```json
+{
+  "rules": {
+    ".read": "auth != null",
+    ".write": "auth != null",
+    "users": {
+      "$uid": {
+        ".write": "$uid === auth.uid || root.child('users/' + auth.uid + '/role').val() === 'admin'"
+      }
+    }
+  }
+}
+```
+
+#### Step 4.5 — Update Firebase Config in the Project
+
+Open `public/js/firebase-config.js` and replace the placeholder values with the config from Step 4.2:
 
 ```javascript
 window.SMS_FIREBASE_CONFIG = {
@@ -115,25 +221,19 @@ window.SMS_FIREBASE_CONFIG = {
   storageBucket: 'YOUR_PROJECT.appspot.com',
   messagingSenderId: 'YOUR_SENDER_ID',
   appId: 'YOUR_APP_ID',
-  databaseURL: 'https://YOUR_PROJECT.firebasedatabase.app/',
+  databaseURL: 'https://YOUR_PROJECT-default-rtdb.REGION.firebasedatabase.app/',
   measurementId: 'YOUR_MEASUREMENT_ID'
 };
 ```
 
-#### Firebase Setup Checklist
+> **Important:** The `databaseURL` must match the region you selected when creating the Realtime Database. Check the URL shown at the top of the Realtime Database page in the Firebase Console.
 
-1. Go to [Firebase Console](https://console.firebase.google.com/) and create a new project (or use an existing one).
-2. Enable **Authentication** → Sign-in method → **Email/Password**.
-3. Enable **Realtime Database** and set the following security rules for development:
-   ```json
-   {
-     "rules": {
-       ".read": "auth != null",
-       ".write": "auth != null"
-     }
-   }
-   ```
-4. Copy your project's web config into `firebase-config.js`.
+Also update the `.env` file:
+
+```env
+FIREBASE_API_KEY=YOUR_API_KEY
+PORT=3000
+```
 
 ### 5. Start the Development Server
 

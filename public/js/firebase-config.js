@@ -1,11 +1,11 @@
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 window.SMS_FIREBASE_CONFIG = {
-  apiKey: 'AIzaSyCigBtLmEYpbDOKgKQ7n3HwCImHGIkz2Ig',
-  authDomain: 'bcanotes-ecbac.firebaseapp.com',
-  projectId: 'bcanotes-ecbac',
-  storageBucket: 'bcanotes-ecbac.firebasestorage.app',
-  messagingSenderId: '596561836172',
-  appId: '1:596561836172:web:2cac0df8a1883b3c75a3a9',
-  databaseURL: 'https://bcanotes-ecbac-default-rtdb.asia-southeast1.firebasedatabase.app/',
-  measurementId: 'G-7PS21028VW'
+  apiKey: 'AIzaSyDQoLPv834S2TbBw6pM5aECLRribzgnNdU',
+  authDomain: 'projects-6c49a.firebaseapp.com',
+  projectId: 'projects-6c49a',
+  storageBucket: 'projects-6c49a.firebasestorage.app',
+  messagingSenderId: '770504051582',
+  appId: '1:770504051582:web:801a14c4de3d1b87ea012f',
+  databaseURL: 'https://projects-6c49a-default-rtdb.asia-southeast1.firebasedatabase.app/',
+  measurementId: 'G-CZ2BSPQ7NC'
 };
