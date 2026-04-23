@@ -132,7 +132,6 @@ This project uses **Firebase Authentication** (Email/Password) and **Firebase Re
    - **Password:** choose a strong password
    - Click **Add user**
 
-> **Note:** Users who register through the app's login page will be assigned the `resident` role by default. To make a user an admin, you'll need to set their role in the Realtime Database (see Step 4.4).
 
 #### Step 4.4 — Set Up Realtime Database & Import Seed Data
 
